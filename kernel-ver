@@ -1,0 +1,5 @@
+#!/bin/bash
+Kernel=$(ls /boot/ | grep vmlinuz)
+Kernel=${Kernel:8}
+echo $Kernel
+

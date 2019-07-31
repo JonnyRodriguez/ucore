@@ -1,0 +1,12 @@
+#!/bin/bash
+#CENTOS="CentOS-7-x86_64-GenericCloud-1905.raw.tar.gz"
+IMG="CentOS-7-x86_64-GenericCloud.raw.tar.gz"
+FILE="CentOS-7-x86_64-GenericCloud-1905.raw"
+DEV="/dev/sdb"
+DIR="temp"
+#FILE=${CENTOS##*/}
+
+tar xzfO $DIR/$IMG $FILE | pv -s 9G | tee $DEV >>/dev/null || exit $?
+e2fsck -f $DEV1 || exit $?
+resize2fs $DEV1 || exit $?
+

@@ -1,0 +1,8 @@
+#!/bin/bash
+let $# && DIR=$1 || DIR="./"
+KERNELURL="https://kernel.ubuntu.com/~kernel-ppa/mainline"
+
+wget -c -P $DIR $KERNELURL/v4.19.59/linux-headers-4.19.59-041959_4.19.59-041959.201907140332_all.deb || exit $?
+wget -c -P $DIR $KERNELURL/v4.19.59/linux-headers-4.19.59-041959-generic_4.19.59-041959.201907140332_amd64.deb || exit $?
+wget -c -P $DIR $KERNELURL/v4.19.59/linux-image-unsigned-4.19.59-041959-generic_4.19.59-041959.201907140332_amd64.deb || exit $?
+wget -c -P $DIR $KERNELURL/v4.19.59/linux-modules-4.19.59-041959-generic_4.19.59-041959.201907140332_amd64.deb || exit $?

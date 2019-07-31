@@ -1,0 +1,29 @@
+#!/bin/bash
+DISTRO="bionic" 
+ARCH="amd64"
+DIR="temp"
+VER="current"
+EXT="tar.gz"
+URL="https://cloud-images.ubuntu.com/"
+DIR="./"
+
+while [[ "$#" -gt 0 ]]; do case $1 in
+  -v|--version) VER="$2"; shift;;
+  -a|--arch) ARCH="$2"; shift;;
+  -o|--output) DIR="$2"; shift;;
+  -d|--distro) DISTRO="$2"; shift;;
+  -l|--listdistro) LISTDISTRO=1;;
+  -L|--listdistros) LISTDISTROS=1;;
+  -lv|--listversions) LISTVERS=1;;
+  -h|--help) usage; exit;;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
+
+[ $LISTDISTROS ] && { curl -s "$URL/" | grep -Po '(?<=href=")[^"]*/'; exit; }
+[ $LISTVERS ] && { curl -s "$URL/$DISTRO/" | grep -Po '(?<=href=")[^"]*/'; exit; }
+[ $LISTDISTRO ] && { curl -s "$URL/$DISTRO/$VER/" | grep cloudimg | grep -Po '(?<=href=")[^"]*'; exit; }
+
+IMG="$DISTRO-server-cloudimg-$ARCH"
+
+wget -c -P $DIR $URL/$DISTRO/$VER/$IMG.$EXT || exit $?
+#[ -f $TMP/$IMG.img ] || tar xzvf $TMP/$IMG.tar.gz -C $TMP/ || exit $?

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+let $# || { echo No arguments supplied; exit 1; }
+
+DIR="mount"
+TMP="temp"
+DEV=$1
+
+function mount-fs() {
+  mkdir -p $DIR
+  mount $DEV $DIR || exit $?
+  cd $DIR
+}
+
+function umount-fs() {
+  cd ..
+  umount $DIR
+}
+
+function open-chroot() {
+  mkdir -p $TMP
+  mount -o bind ../$TMP $TMP/ || exit $?
+
+  mount -t proc /proc proc/ || exit $?
+  mount -o bind /sys sys/ || exit $?
+  mount -o bind /dev dev/ || exit $?
+  mount -o bind /dev/pts dev/pts/ || exit $?
+
+  cp /etc/resolv.conf etc/resolv.conf --remove-destination || exit $?
+}
+
+function close-chroot() {
+  umount dev/pts dev sys proc $TMP
+}
+
+mount-fs
+open-chroot
+LANG=C chroot . /bin/bash $TMP/fiximg
+close-chroot
+umount-fs

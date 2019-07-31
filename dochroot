@@ -1,0 +1,43 @@
+#!/bin/bash
+
+DEV="/dev/sdb2"
+DIR="mount"
+MNTDIR="~/temp"
+
+while [[ "$#" -gt 0 ]]; do case $1 in
+  -m|--mount) MNTDIR="$2"; shift;;
+  -t|--target) DEV="$2"; shift;;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
+
+function mount-fs() {
+  mkdir -p $DIR
+  sudo mount $DEV $DIR
+  cd $DIR
+}
+
+function umount-fs() {
+  cd ..
+  sudo umount $DIR
+}
+
+function open-chroot() {
+  sudo mount -o bind $MNTDIR /mnt
+
+  sudo mount -t proc /proc proc/
+  sudo mount -o bind /sys sys/
+  sudo mount -o bind /dev dev/
+  sudo mount -o bind /dev/pts dev/pts/
+
+  sudo cp /etc/resolv.conf etc/resolv.conf --remove-destination
+}
+
+function close-chroot() {
+  sudo umount dev/pts dev sys proc mnt
+}
+
+mount-fs
+open-chroot
+LANG=C sudo chroot .
+close-chroot
+umount-fs

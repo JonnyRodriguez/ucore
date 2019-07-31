@@ -1,0 +1,17 @@
+#!/bin/bash
+DISTRO="bionic"
+ARCH="amd64"
+EXT="tar.gz"
+IMG="$DISTRO-server-cloudimg-$ARCH"
+DIR="temp"
+CENTOS="CentOS-7-x86_64-GenericCloud-1905.raw"
+
+let $# || { echo You must specify a target; exit 1; }
+DEV=$1
+
+#cat $TMP/$IMG.img | pv -s 1G | tee $DEV >/dev/null || exit $?
+#cp $TMP/$IMG.img $DEV || exit $?
+tar xzfO $DIR/$IMG.$EXT $IMG.img | pv -s 1G | tee $DEV >>/dev/null || exit $?
+e2fsck -f $DEV || exit $?
+resize2fs $DEV || exit $?
+

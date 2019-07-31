@@ -1,0 +1,3 @@
+#!/bin/bash
+let $# && DIR=$1 || DIR="./"
+wget -c -P $DIR https://raw.githubusercontent.com/JonnyRodriguez/minero/master/claymore.tgz || exit $?

@@ -1,0 +1,6 @@
+#!/bin/bash
+[ $# ] || { echo Must supply a utilname; exit 1; }
+URL="https://raw.githubusercontent.com/JonnyRodriguez"
+wget -N $URL/$1/master/$1
+
+

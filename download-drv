@@ -1,0 +1,36 @@
+#!/bin/bash
+DIR="temp"
+REF="https://www.amd.com/en/support"
+VER="18.30"
+TARGET="18.04"
+
+while [[ "$#" -gt 0 ]]; do case $1 in
+  -v|--version) VER=$2; shift;;
+  -o|--output) DIR=$2; shift;;
+  -t|--target) TARGET=$2; shift;;
+  -x|--extract) EXTRACT=1;;
+  -h|--help) usage; exit;;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
+
+if [ $TARGET == 16.04 ]; then
+  [ $VER == 17.50 ] && URL="https://www2.ati.com/drivers/linux/ubuntu/amdgpu-pro-17.50-511655.tar.xz"
+  [ $VER == 18.10 ] && URL="https://www2.ati.com/drivers/linux/ubuntu/amdgpu-pro-18.10-572953.tar.xz"
+  [ $VER == 18.20 ] && URL="https://www2.ati.com/drivers/linux/amdgpu-pro-18.20-684755-ubuntu-16.04.tar.xz"
+  [ $VER == 18.30 ] && URL="https://www2.ati.com/drivers/linux/ubuntu/amdgpu-pro-18.30-641594.tar.xz"
+  [ $VER == 18.40 ] && URL="https://drivers.amd.com/drivers/linux/amdgpu-pro-18.40-673869-ubuntu-16.04.tar.xz"
+fi
+
+if [ $TARGET == 18.04 ]; then
+  [ $VER == 18.20 ] && URL="https://www2.ati.com/drivers/linux/amdgpu-pro-18.20-673703-ubuntu-18.04.tar.xz"
+  [ $VER == 18.30 ] && URL="https://www2.ati.com/drivers/linux/ubuntu/18.04/amdgpu-pro-18.30-641594.tar.xz"
+  [ $VER == 18.40 ] && URL="https://drivers.amd.com/drivers/linux/amdgpu-pro-18.40-697810-ubuntu-18.04.tar.xz"
+  [ $VER == 18.50 ] && URL="https://drivers.amd.com/drivers/linux/amdgpu-pro-18.50-756341-ubuntu-18.04.tar.xz"
+  [ $VER == 19.10 ] && URL="https://drivers.amd.com/drivers/linux/amdgpu-pro-19.10-785425-ubuntu-18.04.tar.xz"
+  [ $VER == 19.20 ] && URL="https://drivers.amd.com/drivers/linux/amdgpu-pro-19.20-812932-ubuntu-18.04.tar.xz"
+fi
+
+[ $URL ] || { echo Invalid version; exit 1; }
+FILE="${URL##*/}"
+wget -c -P $DIR --referer $REF $URL || exit $?
+[ $EXTRACT ] && (tar xvf $DIR/$FILE -C $DIR || exit $?)

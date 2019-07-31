@@ -1,0 +1,17 @@
+#!/bin/bash
+DIR="temp"
+URL="http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.raw.tar.gz"
+DURL="https://drivers.amd.com/drivers/linux/amdgpu-pro-19.20-812932-rhel-7.6.tar.xz"
+REF="https://www.amd.com/en/support"
+
+while [[ "$#" -gt 0 ]]; do case $1 in
+  -o|--output) DIR="$2"; shift;;
+  -x|--extract) EXTRACT=1;;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
+
+wget -c -P $DIR $URL || exit $?
+wget -c -P $DIR --referer $REF $DURL || exit $?
+FILE="${DURL##*/}"
+[ $EXTRACT ] && (tar xvf $DIR/$FILE -C $DIR || exit $?)
+
