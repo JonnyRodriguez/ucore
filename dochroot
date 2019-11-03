@@ -38,6 +38,6 @@ function close-chroot() {
 
 mount-fs
 open-chroot
-LANG=C sudo chroot .
+LANG=C sudo chroot . /bin/bash
 close-chroot
 umount-fs
